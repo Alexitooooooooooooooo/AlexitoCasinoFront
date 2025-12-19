@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import TopBarLogged from '~/components/TopBarLogged.vue';
+import TopBarLogged from '~/components/layout/TopBarLogged.vue';
 
 
 </script>

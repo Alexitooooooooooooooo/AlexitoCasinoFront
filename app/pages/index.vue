@@ -98,7 +98,7 @@ import Button from 'primevue/button';
 import Paginator from 'primevue/paginator';
 import Dialog from 'primevue/dialog';
 // Import game components
-import MonsterHunterGame from '~/components/MonsterHunterGame.vue';
+import MonsterHunterGame from '~/components/games/MonsterHunterGame.vue';
 
 const client = useSanctumClient();
 const { user } = useSanctumAuth(); // Use composable to get user locally if needed

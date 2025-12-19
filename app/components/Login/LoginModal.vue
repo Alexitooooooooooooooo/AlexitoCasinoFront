@@ -18,8 +18,8 @@
             <div class="flex flex-col gap-4">
 
                 <IconField>
-                    <InputIcon class="pi pi-envelope" />
-                    <InputText v-model="email" type="email" placeholder="Email" variant="filled" class="w-full"  />
+                    <InputIcon class="pi pi-user" />
+                    <InputText v-model="username" type="username" placeholder="Username" variant="filled" class="w-full"  />
                 </IconField>
                 
                 <IconField>
@@ -50,7 +50,7 @@ const toast = useToast();
 
 
 const visible = defineModel('visible');
-const email = ref('');
+const username = ref('');
 const password = ref('');
 
 const {login} = useSanctumAuth()
@@ -58,7 +58,7 @@ const {login} = useSanctumAuth()
 const OnLogin = async () =>   {
 
     const credentials = {
-        email: email.value,
+        username: username.value,
         password: password.value
     }
 

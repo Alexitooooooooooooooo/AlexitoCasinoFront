@@ -133,7 +133,7 @@ async function getBalance() {
 async function getUser() {
   try{
     const res: any = await client('/me', { method: 'GET' })
-    username.value = res.user.name
+    username.value = res.user.username
     id.value = res.user.id
     getBalance();
 
