@@ -90,7 +90,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import Divider from 'primevue/divider';
 import Card from 'primevue/card';
 import Carousel from 'primevue/carousel';
@@ -105,7 +105,7 @@ const { user } = useSanctumAuth(); // Use composable to get user locally if need
 let saldo = ref(0);
 
 // UI State
-const gameDialogVisible = ref(false);
+const gameDialogVisible = useState('gameDialogVisible', () => false);
 const selectedGame = ref<any>(null);
 
 async function getData() {
@@ -130,11 +130,7 @@ function openGame(game: any) {
     console.log(`Opening game: ${game.name}`);
 }
 
-watch(gameDialogVisible, (newValue) => {
-    if (!newValue) {
-        window.location.reload();
-    }
-});
+
 
 onMounted(() => {
     getData();

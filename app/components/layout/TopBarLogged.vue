@@ -46,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import Toolbar from 'primevue/toolbar';
 import Button from 'primevue/button';
 import Menu from 'primevue/menu';
@@ -58,6 +58,7 @@ const username = ref('');
 const id = ref('');
 const menu = ref();
 const { logout } = useSanctumAuth();
+const gameDialogVisible = useState('gameDialogVisible');
 const toast = useToast();
 
 const items = ref([
@@ -141,4 +142,11 @@ async function getUser() {
     console.error(error)
   }  
 } 
+
+
+
+watch(gameDialogVisible, (newValue) => {
+    if (!newValue) {
+    getBalance();    }
+});
 </script>
