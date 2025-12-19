@@ -5,7 +5,6 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
 
-
   css: [
     'primeicons/primeicons.css',
     '~/assets/css/main.css',
@@ -18,4 +17,15 @@ export default defineNuxtConfig({
   build: {
     transpile: ['primevue'],
   },
+
+  modules: ['nuxt-auth-sanctum'],
+
+
+  sanctum: {
+    mode: 'token',
+    endpoints: {
+      user: '/me',
+    }
+
+  }
 })
