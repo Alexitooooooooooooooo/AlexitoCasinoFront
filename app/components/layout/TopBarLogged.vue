@@ -149,6 +149,12 @@ async function getUser() {
 
 watch(gameDialogVisible, (newValue) => {
     if (!newValue) {
-    getBalance();    }
+        getBalance();    
+    }
+});
+
+const triggerBalanceRefresh = useState('triggerBalanceRefresh');
+watch(triggerBalanceRefresh, () => {
+    getBalance();
 });
 </script>

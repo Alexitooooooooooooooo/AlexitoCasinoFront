@@ -33,14 +33,14 @@
                         <Column field="game_type" header="Juego"></Column>
                         <Column field="amount" header="Monto">
                              <template #body="slotProps">
-                                <span :class="slotProps.data.type === 'win' ? 'text-green-400' : 'text-red-400'">
-                                    {{ slotProps.data.type === 'win' ? '+' : '-' }}{{ formatNumber(slotProps.data.amount) }}
+                                <span :class="(slotProps.data.type === 'win' || slotProps.data.type === 'deposit') ? 'text-green-400' : 'text-red-400'">
+                                    {{ (slotProps.data.type === 'win' || slotProps.data.type === 'deposit') ? '+' : '-' }}{{ formatNumber(slotProps.data.amount) }}
                                 </span>
                             </template>
                         </Column>
                         <Column field="type" header="Tipo">
                             <template #body="slotProps">
-                                <Tag :severity="slotProps.data.type === 'win' ? 'success' : 'danger'" :value="slotProps.data.type === 'win' ? 'Ganancia' : 'Apuesta'" />
+                                <Tag :severity="getSeverity(slotProps.data.type)" :value="getLabel(slotProps.data.type)" />
                             </template>
                         </Column>
                         <Column field="balance_before" header="Saldo antes">
@@ -125,6 +125,26 @@ async function getTransactions() {
         
     } catch (error) {
         console.error(error)
+    }
+}
+
+function getSeverity(type: string) {
+    switch(type) {
+        case 'win': return 'success';
+        case 'deposit': return 'success';
+        case 'withdraw': return 'warn';
+        case 'bet': return 'danger';
+        default: return 'info';
+    }
+}
+
+function getLabel(type: string) {
+    switch(type) {
+        case 'win': return 'Ganancia';
+        case 'deposit': return 'Depósito';
+        case 'withdraw': return 'Retiro';
+        case 'bet': return 'Apuesta';
+        default: return type.toUpperCase();
     }
 }
 

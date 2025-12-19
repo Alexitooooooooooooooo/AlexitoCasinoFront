@@ -19,6 +19,10 @@
                                 <i class="pi pi-shield" />
                                 <span>Seguridad</span>
                             </Tab>
+                            <Tab value="2" class="flex items-center gap-2">
+                                <i class="pi pi-wallet" />
+                                <span>Recargar</span>
+                            </Tab>
                         </TabList>
                         <TabPanels>
                             <TabPanel value="0">
@@ -52,6 +56,20 @@
                                     <p>Próximamente: Cambiar contraseña</p>
                                 </div>
                             </TabPanel>
+                            <TabPanel value="2">
+                                <Card>
+                                    <template #title>
+                                        <div class="p-4 border-b border-surface-200 dark:border-surface-700 text-center">
+                                            <span class="text-2xl font-bold text-white">Recargar Saldo</span>
+                                        </div>
+                                    </template>
+                                    <template #content>
+                                        <div class="flex justify-center">
+                                            <Button label="Recargar" @click="chargeBalance" />
+                                        </div>
+                                    </template>
+                                </Card>
+                            </TabPanel>
                         </TabPanels>
                     </Tabs>
                 </template>
@@ -71,13 +89,19 @@ import TabPanel from 'primevue/tabpanel';
 import InputText from 'primevue/inputtext';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
-import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
+import Button from 'primevue/button';
 
 const client = useSanctumClient();
 
 const username = ref('');
 const email = ref('');
 const balance = ref('');
+const balanceAmount = ref('');
+const userId = ref('');
+
+const toast = useToast();
+
 
 onMounted(() => {
     getUser();
@@ -88,10 +112,11 @@ async function getUser() {
         const res: any = await client('/me', { method: 'GET' });
         username.value = res.user.username;
         email.value = res.user.email;
-        const userId = res.user.id;
+        userId.value = res.user.id;
+        balanceAmount.value = res.user.balance;
         
         // Fetch balance
-        const walletRes: any = await client(`/wallet/${userId}`, { method: 'GET' });
+        const walletRes: any = await client(`/wallet/${userId.value}`, { method: 'GET' });
         balance.value = formatNumber(walletRes.data.Balance);
     } catch (error) {
         console.error("Error fetching profile:", error);
@@ -106,4 +131,49 @@ function formatNumber(num: number) {
         maximumFractionDigits: 2
     });
 }
+
+async function chargeBalance() {
+
+    const amountCharge = 10000
+    console.log(amountCharge);
+
+    if(balanceAmount.value < 500) {
+        
+        try{
+            await client(`/wallet/${userId.value}/charge`, { method: 'POST', body: { amount: amountCharge } });
+            toast.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'Recarga exitosa',
+                life: 3000
+            });
+            
+            const triggerBalanceRefresh = useState('triggerBalanceRefresh');
+            triggerBalanceRefresh.value = (triggerBalanceRefresh.value || 0) + 1;
+            
+            getUser();
+        }catch(error){
+            console.log(error);
+            toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Error al recargar ',
+                life: 3000
+            });
+        }
+
+
+
+    }else{
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Debes tener un saldo menor a 500 para recargar',
+            life: 3000
+        });
+    }
+
+    
+}
+
 </script>
