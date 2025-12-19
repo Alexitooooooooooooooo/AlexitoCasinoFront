@@ -19,6 +19,7 @@
             @click="toggleDarkMode" 
         />
         <Button label="Iniciar Sesión" icon="pi pi-user" severity="success" variant="outlined" @click="$emit('login-click')" />
+        <Button label="Registrarse" icon="pi pi-user-plus" severity="success" variant="outlined" @click="$emit('register-click')" />
       </div>
     </template>
   </Toolbar>

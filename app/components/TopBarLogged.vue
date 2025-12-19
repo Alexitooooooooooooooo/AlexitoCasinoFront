@@ -20,7 +20,6 @@
             @click="toggleDarkMode" 
         />
 
-        <!-- Balance Text -->
         <Button 
             :label="balance" 
             icon="pi pi-wallet" 
@@ -29,7 +28,6 @@
             class="!text-lg font-bold !text-surface-900 dark:!text-surface-0 pointer-events-none" 
         />
 
-        <!-- User Text -->
         <Button 
             :label="username" 
             icon="pi pi-user" 
@@ -66,6 +64,12 @@ const items = ref([
     {
         label: 'Perfil',
         icon: 'pi pi-user',
+        command: () => {
+        }
+    },
+    {
+        label: 'Historial',
+        icon: 'pi pi-history',
         command: () => {
         }
     },
