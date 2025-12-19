@@ -53,10 +53,12 @@
             dismissableMask
         >
             <div v-if="selectedGame" class="relative">
-                <!-- Conditionally Render Games -->
-                <MonsterHunterGame 
-                    v-if="selectedGame.id === 1" 
-                    :gameName="selectedGame.name" 
+                <!-- Generic Slot Game -->
+                <SlotGame 
+                    v-if="selectedGame.slug" 
+                    :key="selectedGame.id"
+                    :gameSlug="selectedGame.slug" 
+                    :endpoint="selectedGame.endpoint"
                     :gameId="selectedGame.id"
                     @close="gameDialogVisible = false"
                 />
@@ -98,22 +100,39 @@ import Button from 'primevue/button';
 import Paginator from 'primevue/paginator';
 import Dialog from 'primevue/dialog';
 // Import game components
-import MonsterHunterGame from '~/components/games/MonsterHunterGame.vue';
+import SlotGame from '~/components/games/SlotGame.vue';
 
 const client = useSanctumClient();
-const { user } = useSanctumAuth(); // Use composable to get user locally if needed
+const { user } = useSanctumAuth(); 
 let saldo = ref(0);
 
 // UI State
 const gameDialogVisible = useState('gameDialogVisible', () => false);
 const selectedGame = ref<any>(null);
 
+const games = ref<any[]>([]);
+
 async function getData() {
-    try{
-        const res: any = await client('/wallet/1', { method: 'GET' })
-        saldo.value = res.data.Balance
+    try {
+        // Fetch Balance
+        const walletRes: any = await client('/wallet/1', { method: 'GET' });
+        saldo.value = walletRes.data.Balance;
+
+        // Fetch Games
+        const slotsRes: any = await client('/slots', { method: 'GET' });
+        const slotsData = Array.isArray(slotsRes) ? slotsRes : (slotsRes.data || []);
+        
+        games.value = slotsData.map((game: any) => ({
+            ...game,
+            // Convert Code to Slug (e.g. Minecraft_Slot -> minecraft-slot) config convention
+            slug: game.code.toLowerCase().replace(/_/g, '-'), 
+            endpoint: game.code,
+            image: `/games/${game.code.toLowerCase().replace(/_/g, '-')}/cover.jpg` 
+        }));
+        
+
     } catch (error) {
-        console.error(error)
+        console.error("Error fetching data:", error);
     }
 }
 
@@ -130,34 +149,9 @@ function openGame(game: any) {
     console.log(`Opening game: ${game.name}`);
 }
 
-
-
 onMounted(() => {
     getData();
 })
-
-const games = ref([
-    {
-        id: 1,
-        name: 'Monster Hunter Slot', // Updated name
-        image: '/unnamed.jpg' // Assuming this is the MH image
-    },
-    {
-        id: 2,
-        name: 'Minecraft Spin',
-        image: '/mine.jpg'
-    },
-    {
-        id: 3,
-        name: 'Sugar Rush',
-        image: 'https://placehold.co/600x450/a855f7/ffffff?text=Sugar+Rush'
-    },
-    {
-        id: 4,
-        name: 'Big Bass Bonanza',
-        image: 'https://placehold.co/600x450/3b82f6/ffffff?text=Big+Bass'
-    }
-]);
 
 const first = ref(0);
 const rows = ref(6);
