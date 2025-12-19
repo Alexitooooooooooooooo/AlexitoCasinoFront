@@ -114,7 +114,7 @@ const SYMBOL_TEXTURES: Record<number, string> = {
     2: '/Slot/MHW-Icono_Rathalos_Celeste.webp',
     3: '/Slot/MHWI-Icono_Rathalos_Plateado.webp',
     4: '/Slot/MHWI-Icono_Nargacuga.webp',
-    5: '/Slot/MH3U-Icono_Diablos_Negra.webp',
+    5: '/Slot/MHW-Icono_Paolumu.webp',
     6: '/Slot/MHWI-Icono_Tigrex.webp'
 };
 
@@ -177,6 +177,8 @@ async function initPixi() {
     }
     PIXI.Assets.add({ alias: 'fondo', src: '/Slot/fondo.webp' });
     assetsToLoad.push('fondo');
+    PIXI.Assets.add({ alias: 'title', src: '/Slot/Name.png' });
+    assetsToLoad.push('title');
 
     try {
         await PIXI.Assets.load(assetsToLoad);
@@ -225,6 +227,35 @@ function setupGame() {
     slotContainer.x = (app.screen.width - (desiredWidth * scaleFactor)) / 2;
     slotContainer.y = (app.screen.height - (desiredHeight * scaleFactor)) / 2;
     app.stage.addChild(slotContainer);
+
+    // Title / Logo
+    try {
+        const title = PIXI.Sprite.from('title');
+        title.anchor.set(0.5, 0.5); 
+        
+        // Calculate available space above slots
+        const topGap = slotContainer.y;
+        
+        // Ideally center in the top gap, but ensure it exists
+        const targetY = topGap > 0 ? topGap / 2 : 50; 
+        
+        // Max height is 80% of the gap
+        const maxHeight = Math.max(topGap * 0.9, 200); 
+        const maxWidth = app.screen.width * 0.6;
+
+        const scale = Math.min(
+            maxWidth / title.width,
+            maxHeight / title.height
+        );
+        
+        title.scale.set(scale);
+        title.x = app.screen.width / 2;
+        title.y = targetY;
+        
+        app.stage.addChild(title);
+    } catch(e) {
+        console.error("Error adding title", e);
+    }
 
     const reelsContainer = new PIXI.Container();
     slotContainer.addChild(reelsContainer);
@@ -415,24 +446,61 @@ function startLandingAnimation(data: any) {
     }
 }
 
+// Paylines definition (Standard 5x3 configuration)
+const PAYLINES = [
+    [0, 0, 0, 0, 0], // 0 Top
+    [1, 1, 1, 1, 1], // 1 Middle
+    [2, 2, 2, 2, 2], // 2 Bottom
+    [0, 1, 2, 1, 0], // 3 V-Shape
+    [2, 1, 0, 1, 2], // 4 Inverted V
+    [0, 0, 1, 0, 0], // 5
+    [2, 2, 1, 2, 2], // 6
+    [1, 2, 2, 2, 1], // 7
+    [1, 0, 0, 0, 1], // 8
+    [0, 1, 1, 1, 0], // 9
+    [2, 1, 1, 1, 2], // 10
+];
+
 function drawWinningLines(data: any) {
     if (!paylinesLayer || !Array.isArray(data.win_lines) || data.win_lines.length === 0) return;
     paylinesLayer.removeChildren();
 
     data.win_lines.forEach((lineInfo: any, idx: number) => {
+        const lineId = lineInfo.line;
+        // Default to middle line if undefined, or handle straight rows if < 3 and not in map (fallback)
+        let coords = PAYLINES[lineId];
+        
+        // Fallback for simple row indices if not in PAYLINES map but valid row
+        if (!coords && lineId < VISIBLE_ROWS) {
+            coords = Array(REEL_COUNT).fill(lineId);
+        }
+        
+        if (!coords) return; // Unknown line
+
         const g = new PIXI.Graphics();
-        const baseY = (lineInfo.line + 0.5) * SYMBOL_SIZE;
-        const colors = [0xffff00, 0x00ffe0, 0xffcc00];
+        const colors = [0xffff00, 0x00ffe0, 0xffcc00, 0xff00ff, 0x00ff00];
         const color = colors[idx % colors.length];
 
-        g.moveTo(0, baseY);
-        g.lineTo(REEL_WIDTH * REEL_COUNT, baseY);
-        g.stroke({ width: 4, color: color, alpha: 0.9 });
-
+        // Draw path
         for (let c = 0; c < REEL_COUNT; c++) {
-            const cx = c * REEL_WIDTH + REEL_WIDTH / 2;
-            g.circle(cx, baseY, 10).fill({ color: color, alpha: 0.9 });
+            const row = coords[c];
+            const x = c * REEL_WIDTH + REEL_WIDTH / 2;
+            const y = row * SYMBOL_SIZE + SYMBOL_SIZE / 2;
+
+            if (c === 0) g.moveTo(x, y);
+            else g.lineTo(x, y);
         }
+
+        g.stroke({ width: 8, color: color, alpha: 0.8, cap: 'round', join: 'round' });
+
+        // Draw dots
+        for (let c = 0; c < REEL_COUNT; c++) {
+            const row = coords[c];
+            const x = c * REEL_WIDTH + REEL_WIDTH / 2;
+            const y = row * SYMBOL_SIZE + SYMBOL_SIZE / 2;
+            g.circle(x, y, 12).fill({ color: color, alpha: 1 });
+        }
+
         paylinesLayer!.addChild(g);
     });
 
