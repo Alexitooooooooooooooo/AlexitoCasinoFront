@@ -66,12 +66,14 @@ const items = ref([
         label: 'Perfil',
         icon: 'pi pi-user',
         command: () => {
+            navigateTo('/user/profile');
         }
     },
     {
         label: 'Historial',
         icon: 'pi pi-history',
         command: () => {
+            navigateTo('/user/history');
         }
     },
     {
