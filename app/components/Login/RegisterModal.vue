@@ -86,7 +86,7 @@ const initialValues = ref({
 
 const resolver = ref(zodResolver(
     z.object({
-        username: z.string().min(1, { message: 'El nombre de usuario es requerido.' }),
+        username: z.string().min(1, { message: 'El nombre de usuario es requerido.' }).regex(/^\S*$/, { message: 'El nombre de usuario no debe contener espacios.' }),
         email: z.string().min(1, { message: 'El email es requerido.' }).email({ message: 'El email es invalido.' }),
         password: z.string().min(8, { message: 'La contraseña debe tener al menos 8 caracteres.' }),
         password_confirmation: z.string().min(1, { message: 'Debe confirmar la contraseña.' })

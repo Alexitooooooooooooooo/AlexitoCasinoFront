@@ -115,11 +115,20 @@ const selectedGame = ref<any>(null);
 
 const games = ref<any[]>([]);
 
+
+async function getSaldo() {
+    try {
+        const walletRes: any = await client('/wallet/1', { method: 'GET' });
+        saldo.value = walletRes.data.Balance;
+    } catch (error) {
+        console.error("Error fetching saldo:", error);
+    }
+}
+
 async function getData() {
     try {
         // Fetch Balance
-        const walletRes: any = await client('/wallet/1', { method: 'GET' });
-        saldo.value = walletRes.data.Balance;
+        await getSaldo();
 
         // Fetch Games
         const slotsRes: any = await client('/slots', { method: 'GET' });
