@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full h-[600px] md:h-[80vh] bg-surface-900 flex flex-col items-center justify-center relative overflow-hidden rounded-xl">
+    <div class="w-full h-[calc(100vh-150px)] md:h-[80vh] bg-surface-900 flex flex-col items-center justify-center relative overflow-hidden rounded-xl">
         
         <!-- Game Canvas Container -->
         <div ref="gameContainer" class="absolute inset-0 z-0 flex items-center justify-center bg-black">

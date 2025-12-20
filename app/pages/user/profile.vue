@@ -5,7 +5,7 @@
             <Card class="overflow-hidden border-none shadow-xl bg-surface-900">
                 <template #title>
                     <div class="p-4 border-b border-surface-200 dark:border-surface-700 text-center">
-                        <span class="text-2xl font-bold text-white">Mi Perfil</span>
+                        <span class="text-2xl font-bold text-on-surface">Mi Perfil</span>
                     </div>
                 </template>
                 <template #content>
@@ -60,7 +60,7 @@
                                 <Card>
                                     <template #title>
                                         <div class="p-4 border-b border-surface-200 dark:border-surface-700 text-center">
-                                            <span class="text-2xl font-bold text-white">Recargar Saldo</span>
+                                            <span class="text-2xl font-bold text-on-surface">Recargar Saldo</span>
                                         </div>
                                     </template>
                                     <template #content>

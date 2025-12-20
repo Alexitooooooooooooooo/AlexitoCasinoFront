@@ -48,8 +48,11 @@
             v-model:visible="gameDialogVisible" 
             modal 
             :header="selectedGame?.name || 'Juego'" 
-            class="w-full max-w-6xl mx-auto"
-            :pt="{ content: { class: '!p-0' } }" 
+            class="w-full max-w-6xl mx-auto m-0 max-h-screen"
+            :pt="{ 
+                content: { class: '!p-0' },
+                root: { class: '!max-h-screen !m-0 rounded-none md:rounded-xl' }
+            }" 
             dismissableMask
         >
             <div v-if="selectedGame" class="relative">
@@ -136,7 +139,6 @@ async function getData() {
     }
 }
 
-// Logic to open game
 const loginWarningVisible = ref(false);
 
 function openGame(game: any) {

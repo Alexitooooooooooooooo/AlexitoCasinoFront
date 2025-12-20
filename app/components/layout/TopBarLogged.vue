@@ -2,15 +2,15 @@
   <Toolbar class="border-0 border-b border-gray-200 bg-white !rounded-none !p-2">
     <template #start>
       <NuxtLink to="/" class="flex items-center gap-3 group">
-        <img src="/logocorona.png" alt="ALEXITOCASINO" class="h-10 transition-transform group-hover:scale-110" />
-        <span class="text-2xl font-black tracking-tighter italic bg-gradient-to-r from-emerald-600 via-green-500 to-teal-400 bg-clip-text text-transparent drop-shadow-sm">
+        <img src="/logocorona.png" alt="ALEXITOCASINO" class="h-8 md:h-10 transition-transform group-hover:scale-110" />
+        <span class="hidden md:block text-2xl font-black tracking-tighter italic bg-gradient-to-r from-emerald-600 via-green-500 to-teal-400 bg-clip-text text-transparent drop-shadow-sm">
           ALEXITO<span class="text-teal-400">CASINO</span>
         </span>
       </NuxtLink>
     </template>
 
     <template #end>
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2 md:gap-4">
         <Button 
             :icon="isDark ? 'pi pi-moon' : 'pi pi-sun'" 
             severity="secondary" 
@@ -25,7 +25,7 @@
             icon="pi pi-wallet" 
             variant="text" 
             severity="secondary" 
-            class="!text-lg font-bold !text-surface-900 dark:!text-surface-0 pointer-events-none" 
+            class="!text-sm md:!text-lg font-bold !text-surface-900 dark:!text-surface-0 pointer-events-none whitespace-nowrap" 
         />
 
         <Button 
@@ -33,7 +33,7 @@
             icon="pi pi-user" 
             variant="text" 
             severity="success" 
-            class="font-bold" 
+            class="font-bold !text-sm md:!text-base whitespace-nowrap" 
             iconPos="left" 
             @click="toggle" 
             aria-haspopup="true" 
