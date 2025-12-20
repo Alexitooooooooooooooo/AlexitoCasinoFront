@@ -2,7 +2,9 @@
   <NuxtLayout :name="layout">
     <NuxtRouteAnnouncer />
     <NuxtPage />
-    <Toast />
+    <Toast :pt="{
+        root: { class: '!w-[90%] md:!w-96 !max-w-[90vw] !mx-auto !right-0 !left-0 md:!right-4 md:!left-auto' }
+    }" />
   </NuxtLayout>
 </template>
 

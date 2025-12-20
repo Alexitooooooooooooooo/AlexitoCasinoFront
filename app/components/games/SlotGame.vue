@@ -26,11 +26,11 @@
                      <Select 
                         v-model="currentBet" 
                         :options="betOptions" 
-                        class="!bg-surface-800 !text-white !border-surface-600 !h-10 w-24 !items-center !justify-center"
+                        class="!bg-[#18181b] !text-white !border-[#3f3f46] !h-10 w-24 !items-center !justify-center"
                         :pt="{ 
                             label: { class: '!text-white !font-bold' },
-                            overlay: { class: '!bg-surface-800 !border-surface-700' },
-                            option: { class: '!text-surface-200 hover:!bg-surface-700 focus:!bg-surface-700' }
+                            overlay: { class: '!bg-[#18181b] !border-[#3f3f46]' },
+                            option: { class: '!text-white hover:!bg-[#27272a] focus:!bg-[#27272a]' }
                         }"
                     />
                  </div>
