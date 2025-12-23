@@ -15,6 +15,10 @@ const { isAuthenticated } = useSanctumAuth();
 const layout = computed(() => isAuthenticated.value ? 'logged' : 'default');
 
 useHead({
+  title: 'AlexitoCasino',
+  link: [
+    { rel: 'icon', type: 'image/png', href: '/Logo.png' }
+  ],
   htmlAttrs: {
     class: 'dark-mode'
   }
