@@ -4,7 +4,7 @@
             <Card class="overflow-hidden border-none shadow-xl bg-surface-900">
                 <template #header>
                     <div class="p-4 border-b border-surface-200 dark:border-surface-700">
-                        <h2 class="text-2xl font-bold text-white flex justify-center">Historial de jugadas</h2>
+                        <h2 class="text-2xl font-bold text-on-surface flex justify-center">Historial de jugadas</h2>
                     </div>
                 </template>
                 <template #content>

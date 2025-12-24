@@ -138,6 +138,7 @@ let reels: any[] = [];
 let tweening: any[] = [];
 let slotContainer: PIXI.Container | null = null;
 let paylinesLayer: PIXI.Container | null = null;
+let paylinesTimeout: ReturnType<typeof setTimeout> | null = null;
 
 const REEL_WIDTH = 150;
 const SYMBOL_SIZE = 150;
@@ -428,6 +429,9 @@ function updateReels() {
 }
 
 async function handleSpin() {
+    if (paylinesLayer) paylinesLayer.removeChildren();
+    if (paylinesTimeout) clearTimeout(paylinesTimeout);
+
     if (running.value) return;
     running.value = true;
     win.value = 0;
@@ -528,7 +532,8 @@ function drawWinningLines(data: any) {
         paylinesLayer!.addChild(g);
     });
 
-    setTimeout(() => { if (paylinesLayer && !paylinesLayer.destroyed) paylinesLayer.removeChildren(); }, 3000);
+    if (paylinesTimeout) clearTimeout(paylinesTimeout);
+    paylinesTimeout = setTimeout(() => { if (paylinesLayer && !paylinesLayer.destroyed) paylinesLayer.removeChildren(); }, 10000);
 }
 
 function lerp(a1: number, a2: number, t: number) { return a1 * (1 - t) + a2 * t; }

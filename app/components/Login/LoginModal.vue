@@ -78,7 +78,7 @@ const onFormSubmit = async ({ valid, values }) => {
             await login(values);
             toast.add({
                 severity: 'success',
-                summary: 'Success',
+                summary: 'Bienvenido!',
                 detail: 'Inicio de sesión exitoso',
                 life: 3000
             });
