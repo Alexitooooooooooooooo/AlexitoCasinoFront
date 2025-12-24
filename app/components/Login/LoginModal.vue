@@ -67,8 +67,8 @@ const initialValues = ref({
 
 const resolver = ref(zodResolver(
     z.object({
-        username: z.string().min(1, { message: 'Username es requerido.' }),
-        password: z.string().min(1, { message: 'Password es requerido.' })
+        username: z.string().min(1, { message: 'El nombre de usuario es requerido.' }),
+        password: z.string().min(1, { message: 'La contraseña es requerida.' })
     })
 ));
 
