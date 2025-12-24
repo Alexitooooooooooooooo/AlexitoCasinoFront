@@ -8,11 +8,21 @@
         <!-- UI Overlay -->
         <div class="absolute inset-x-0 bottom-4 z-10 flex justify-center pointer-events-none scale-75 md:scale-100 origin-bottom">
              <div class="bg-black/80 backdrop-blur-md rounded-full border border-surface-700 p-4 flex items-center gap-6 pointer-events-auto shadow-2xl">
+                <!-- Help Button -->
+                 <Button 
+                    class="!w-10 !h-10 !rounded-full !p-0 !bg-[#18181b] !border-[#3f3f46] hover:!bg-[#27272a] text-surface-400 hover:text-white transition-colors flex items-center justify-center mr-4"
+                    @click="showHelp = true"
+                    severity="secondary"
+                 >
+                    <i class='bx bx-question-mark text-2xl font-bold'></i>
+                 </Button>
+
                 <!-- Balance -->
                  <div class="text-center min-w-[80px]">
                     <div class="text-[10px] text-surface-400 uppercase tracking-wider font-bold">Saldo</div>
                     <div class="text-xl font-bold text-yellow-500">{{ parseFloat(balance).toFixed(2) }}</div>
                  </div>
+
 
                  <!-- Win -->
                  <div class="text-center min-w-[80px]">
@@ -52,6 +62,96 @@
              {{ debugMsg }}
         </div>
 
+        <!-- Help Modal -->
+        <div v-if="showHelp" class="absolute inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 animate-fade-in" @click.self="showHelp = false">
+            <div class="bg-[#18181b] border border-surface-700 rounded-xl w-full max-w-4xl max-h-full flex flex-col shadow-2xl relative overflow-hidden">
+                
+                <!-- Header -->
+                <div class="p-6 border-b border-surface-700 flex justify-between items-center bg-[#27272a] shrink-0">
+                    <h2 class="text-2xl font-bold text-white uppercase tracking-wider">Tabla de Pagos</h2>
+                    <button @click="showHelp = false" class="text-surface-400 hover:text-white transition-colors">
+                        <i class='bx bx-x text-4xl'></i>
+                    </button>
+                </div>
+
+                <!-- Content -->
+                <div class="flex-1 overflow-y-auto p-6 custom-scrollbar">
+                    
+                    <!-- Game Info -->
+                    <div class="mb-8 flex flex-wrap gap-4 justify-between items-center bg-surface-900/50 p-4 rounded-lg border border-white/5">
+                        <div>
+                            <span class="text-surface-400 text-sm block">Símbolos</span>
+                            <span class="text-white font-bold">{{ config.symbols?.length || 0 }}</span>
+                        </div>
+                        <div>
+                            <span class="text-surface-400 text-sm block">Filas</span>
+                            <span class="text-white font-bold">{{ VISIBLE_ROWS }}</span>
+                        </div>
+                         <div>
+                            <span class="text-surface-400 text-sm block">Carretes</span>
+                            <span class="text-white font-bold">{{ REEL_COUNT }}</span>
+                        </div>
+                         <div>
+                            <span class="text-surface-400 text-sm block">Líneas</span>
+                            <span class="text-white font-bold">{{ PAYLINES.length }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Symbols Paytable -->
+                    <h3 class="text-lg font-bold text-yellow-500 mb-4 uppercase tracking-wide">Valor de Símbolos</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+                        <div v-for="symbol in SYMBOLS_LIST" :key="symbol" class="bg-surface-900/50 p-4 rounded border border-white/5 flex items-center gap-4">
+                            <img :src="`/games/${props.gameSlug}/symbol_${symbol}.webp`" class="w-16 h-16 object-contain" />
+                            <div class="flex-1">
+                                <div class="text-xs text-surface-400 font-bold mb-2">Símbolos</div>
+                                <div v-if="PAYTABLE[symbol]" class="space-y-1">
+                                    <template v-for="(val, count) in PAYTABLE[symbol]" :key="count">
+                                        <div v-if="Number(count) >= 3 && Number(val) > 0" class="flex justify-between text-xs border-b border-white/5 pb-0.5 last:border-0">
+                                            <span class="text-surface-400">{{ count }}x</span>
+                                            <span class="text-yellow-400 font-bold">{{ val }}</span>
+                                        </div>
+                                    </template>
+                                </div>
+                                <div v-else class="text-xs text-surface-500 italic">
+                                    Sin valor
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Paylines Grid -->
+                    <h3 class="text-lg font-bold text-yellow-500 mb-4 uppercase tracking-wide">Líneas de Pago</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                        <div v-for="(line, idx) in PAYLINES" :key="idx" class="bg-surface-900/50 p-3 rounded border border-white/5 hover:border-yellow-500/50 transition-colors">
+                            <div class="text-xs text-surface-400 mb-2 font-bold flex justify-between">
+                                <span>LÍNEA {{ idx + 1 }}</span>
+                            </div>
+                            
+                            <!-- Mini Grid Representation -->
+                            <div class="grid gap-1" :style="{ gridTemplateColumns: `repeat(${REEL_COUNT}, 1fr)` }">
+                                <template v-for="c in REEL_COUNT" :key="c">
+                                    <div class="flex flex-col gap-1">
+                                        <div v-for="r in VISIBLE_ROWS" :key="r" 
+                                            class="w-full aspect-square rounded-sm border border-white/10 relative"
+                                            :class="{
+                                                'bg-yellow-500/20 border-yellow-500': line[c-1] === (r-1),
+                                                'bg-black/40': line[c-1] !== (r-1)
+                                            }"
+                                        >
+                                            <div v-if="line[c-1] === (r-1)" class="absolute inset-0 flex items-center justify-center">
+                                                <div class="w-1.5 h-1.5 rounded-full bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.8)]"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
     </div>
 </template>
 
@@ -80,7 +180,38 @@ const config = computed(() => gameConfigData.value?.config || {});
 const VISIBLE_ROWS = computed(() => config.value.rows || 3);
 const REEL_COUNT = computed(() => config.value.cols || 5);
 const PAYLINES = computed(() => config.value.lines || []);
+const PAYTABLE = computed(() => {
+    const raw = config.value.paytable || {};
+    const cols = config.value.cols || 5;
+    const normalized: any = {};
+    
+    // Multiplier logic matching Backend: Prize = Bet * Base * (Matches - 2)
+    const getMult = (count: number) => {
+        // Example: Base 10
+        // 3 matches: 10 * (3-2) = 10 (x1)
+        // 4 matches: 10 * (4-2) = 20 (x2)
+        // 5 matches: 10 * (5-2) = 30 (x3)
+        // 6 matches: 10 * (6-2) = 40 (x4)
+        if (count < 3) return 0;
+        return count - 2;
+    };
+
+    for (const key in raw) {
+        if (typeof raw[key] === 'object' && raw[key] !== null) {
+            normalized[key] = raw[key];
+        } else {
+            const base = Number(raw[key]);
+            const entry: any = {};
+            for (let i = 3; i <= cols; i++) {
+                entry[i] = base * getMult(i);
+            }
+            normalized[key] = entry;
+        }
+    }
+    return normalized;
+});
 const SYMBOLS_LIST = computed(() => config.value.symbols || [1, 2, 3, 4, 5, 6]);
+
 
 async function getData() {
     try {
@@ -129,6 +260,7 @@ const currentBet = ref(10);
 const betOptions = ref([1, 2, 5, 10, 20, 50, 100]); // Default before load
 
 const running = ref(false);
+const showHelp = ref(false);
 const debugMsg = ref(`Cargando ${props.gameSlug}...`);
 const gameContainer = ref<HTMLElement | null>(null);
 

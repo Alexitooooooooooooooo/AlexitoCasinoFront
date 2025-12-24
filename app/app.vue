@@ -17,7 +17,8 @@ const layout = computed(() => isAuthenticated.value ? 'logged' : 'default');
 useHead({
   title: 'AlexitoCasino',
   link: [
-    { rel: 'icon', type: 'image/png', href: '/Logo.png' }
+    { rel: 'icon', type: 'image/png', href: '/Logo.png' },
+    { rel: 'stylesheet', href: 'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' }
   ],
   htmlAttrs: {
     class: 'dark-mode'
