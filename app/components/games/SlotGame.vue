@@ -8,14 +8,7 @@
         <!-- UI Overlay -->
         <div class="absolute inset-x-0 bottom-4 z-10 flex justify-center pointer-events-none scale-75 md:scale-100 origin-bottom">
              <div class="bg-black/80 backdrop-blur-md rounded-full border border-surface-700 p-4 flex items-center gap-6 pointer-events-auto shadow-2xl">
-                <!-- Help Button -->
-                 <Button 
-                    class="!w-10 !h-10 !rounded-full !p-0 !bg-[#18181b] !border-[#3f3f46] hover:!bg-[#27272a] text-surface-400 hover:text-white transition-colors flex items-center justify-center mr-4"
-                    @click="showHelp = true"
-                    severity="secondary"
-                 >
-                    <i class='bx bx-question-mark text-2xl font-bold'></i>
-                 </Button>
+
 
                 <!-- Balance -->
                  <div class="text-center min-w-[80px]">
@@ -58,6 +51,17 @@
         </div>
         
         <!-- Debug/Messages -->
+        <div v-if="debugMsg" class="absolute top-4 left-4 z-20 bg-black/50 text-yellow-400 font-mono text-sm px-2 py-1 rounded">
+             {{ debugMsg }}
+        </div>
+
+        <!-- Float Help Button (Top Right) -->
+        <button 
+            class="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-black/50 hover:bg-black/80 backdrop-blur text-white/80 hover:text-white border border-white/10 transition-all flex items-center justify-center shadow-lg"
+            @click="showHelp = true"
+        >
+            <i class='bx bx-question-mark text-2xl font-bold'></i>
+        </button>
         <div v-if="debugMsg" class="absolute top-4 left-4 z-20 bg-black/50 text-yellow-400 font-mono text-sm px-2 py-1 rounded">
              {{ debugMsg }}
         </div>
