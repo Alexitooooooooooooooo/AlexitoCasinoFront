@@ -36,14 +36,19 @@ Asegúrate de tener [Node.js](https://nodejs.org/) instalado.
     ```bash
     npm install
     ```
-
-2.  **Iniciar servidor de desarrollo**:
+2.  **Configurar variables de entorno**:
+    ```bash
+    cp .env.example .env
+    ```
+    Edita el archivo `.env` y agrega tus variables de entorno, en este caso es la ruta NUXT_PUBLIC_SANCTUM_BASE_URL donde debes tener la dirección del backend.
+    
+3.  **Iniciar servidor de desarrollo**:
     ```bash
     npm run dev
     ```
     Visita `http://localhost:3000` en tu navegador.
 
-3.  **Construir para producción**:
+4.  **Construir para producción**:
     ```bash
     npm run build
     ```
@@ -57,4 +62,4 @@ Asegúrate de tener [Node.js](https://nodejs.org/) instalado.
     -   `/composables`: Lógica compartida (Hooks de Vue).
 
 ---
-*Desarrollado para AlexitoCasino* 🎲
+*Desarrollado por Alexito* 🎲
