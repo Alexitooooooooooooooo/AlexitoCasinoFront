@@ -51,17 +51,51 @@
                                 </div>
                             </TabPanel>
                             <TabPanel value="1">
-                                <div class="flex flex-col gap-6 max-w-lg mx-auto py-6 text-center text-gray-500">
-                                    <i class="pi pi-lock text-4xl mb-4"></i>
-                                    <p>Próximamente: Cambiar contraseña</p>
-                                </div>
+                                <Card>
+                                    <template #title>
+                                        <div class="p-4 text-center">
+                                            <span class="text-2xl font-bold text-on-surface">Cambiar Contraseña</span>
+                                        </div>
+                                        <Divider />
+                                    </template>
+                                    <template #content>
+                                        <Form v-slot="$form" :resolver="resolver" :initialValues="initialValues" @submit="onFormSubmit" class="flex flex-col gap-4 max-w-lg mx-auto py-6 text-center text-gray-500">
+                                            <div class="flex flex-col gap-1">
+                                                <IconField>
+                                                    <InputIcon class="pi pi-lock" />
+                                                    <InputText name="current_password" type="password" placeholder="Contraseña Actual" class="w-full" />
+                                                </IconField>
+                                                <Message v-if="$form.current_password?.invalid" severity="error" size="small" variant="simple">{{ $form.current_password.error.message }}</Message>
+                                            </div>
+
+                                            <div class="flex flex-col gap-1">
+                                                <IconField>
+                                                    <InputIcon class="pi pi-lock" />
+                                                    <InputText name="password" type="password" placeholder="Contraseña Nueva" class="w-full" />
+                                                </IconField>
+                                                <Message v-if="$form.password?.invalid" severity="error" size="small" variant="simple">{{ $form.password.error.message }}</Message>
+                                            </div>
+
+                                            <div class="flex flex-col gap-1">
+                                                <IconField>
+                                                    <InputIcon class="pi pi-lock" />
+                                                    <InputText name="password_confirmation" type="password" placeholder="Confirmar Contraseña Nueva" class="w-full" />
+                                                </IconField>
+                                                <Message v-if="$form.password_confirmation?.invalid" severity="error" size="small" variant="simple">{{ $form.password_confirmation.error.message }}</Message>
+                                            </div>
+                                            
+                                            <Button type="submit" label="Cambiar Contraseña" />
+                                        </Form>
+                                    </template>
+                                </Card>
                             </TabPanel>
                             <TabPanel value="2">
                                 <Card>
                                     <template #title>
-                                        <div class="p-4 border-b border-surface-200 dark:border-surface-700 text-center">
+                                        <div class="p-4 text-center">
                                             <span class="text-2xl font-bold text-on-surface">Recargar Saldo</span>
                                         </div>
+                                        <Divider />
                                     </template>
                                     <template #content>
                                         <div class="flex justify-center">
@@ -91,6 +125,29 @@ import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
 import { useToast } from 'primevue/usetoast';
 import Button from 'primevue/button';
+import Divider from 'primevue/divider';
+import Message from 'primevue/message';
+import { handleApiError } from '~/utils/apiErrors';
+import { Form } from '@primevue/forms';
+import { zodResolver } from '@primevue/forms/resolvers/zod';
+import { z } from 'zod';
+
+const initialValues = ref({
+    current_password: '',
+    password: '',
+    password_confirmation: ''
+});
+
+const resolver = ref(zodResolver(
+    z.object({
+        current_password: z.string().min(1, { message: 'La contraseña actual es requerida.' }),
+        password: z.string().min(8, { message: 'La contraseña debe tener al menos 8 caracteres.' }),
+        password_confirmation: z.string().min(1, { message: 'Debe confirmar la contraseña.' })
+    }).refine((data) => data.password === data.password_confirmation, {
+        message: "Las contraseñas no coinciden",
+        path: ["password_confirmation"],
+    })
+));
 
 const client = useSanctumClient();
 
@@ -99,6 +156,33 @@ const email = ref('');
 const balance = ref('');
 const balanceAmount = ref('');
 const userId = ref('');
+
+const onFormSubmit = async ({ valid, values, reset }: any) => {
+    if (valid) {
+        try {
+            await client(`/users/${userId.value}/password`, {
+                method: 'PUT',
+                body: {
+                    password: values.password,
+                    current_password: values.current_password,
+                    password_confirmation: values.password_confirmation
+                }
+            });
+
+            toast.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'Contraseña cambiada exitosamente',
+                life: 3000
+            });
+
+            reset();
+            
+        } catch (error) {
+            handleApiError(toast, error);
+        }
+    }
+};
 
 const toast = useToast();
 
